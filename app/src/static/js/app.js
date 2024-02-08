@@ -136,6 +136,67 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         );
     };
 
+    const updatePriority = (event) => {
+        let value = event.target.value;
+    
+        fetch(`/items/${item.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                name: item.name,
+                priority: value,
+                completed: !item.completed,
+            }),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(r => r.json())
+        .then(onItemUpdate);
+    };
+
+    const updateDueDate = (event) => {
+        let value = event.target.value;
+    
+        fetch(`/items/${item.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                name: item.name,
+                dueDate: value,
+                completed: !item.completed,
+            }),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(r => r.json())
+        .then(onItemUpdate);
+    };
+
+    const Priority = () => {
+        //const { Form } = ReactBootstrap;
+        
+        return (
+            /*<Form.Select>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </Form.Select>*/
+    
+            <select onChange={updatePriority}>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+        )
+    };
+
+    const DueDate = () => {
+        const { Form } = ReactBootstrap;
+    
+        return (
+            <Form.Control
+                type="date"
+                onChange={updateDueDate}
+            />
+        )
+    }
+
     return (
         <Container fluid className={`item ${item.completed && 'completed'}`}>
             <Row>
@@ -178,34 +239,6 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
             </Row>
         </Container>
     );
-}
-
-function Priority() {
-    const { Form } = ReactBootstrap;
-    
-    return (
-        /*<Form.Select>
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-        </Form.Select>*/
-
-        <select>
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-        </select>
-    )
-}
-
-function DueDate() {
-    const { Form } = ReactBootstrap;
-
-    return (
-        <Form.Control
-            type="date"
-        />
-    )
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
