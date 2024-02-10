@@ -121,7 +121,6 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         fetch(`/items/${item.id}`, {
             method: 'PUT',
             body: JSON.stringify({
-                name: item.name,
                 completed: !item.completed,
             }),
             headers: { 'Content-Type': 'application/json' },
@@ -138,13 +137,11 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
 
     const updatePriority = (event) => {
         let value = event.target.value;
-    
+
         fetch(`/items/${item.id}`, {
             method: 'PUT',
             body: JSON.stringify({
-                name: item.name,
                 priority: value,
-                completed: !item.completed,
             }),
             headers: { 'Content-Type': 'application/json' },
         })
@@ -158,9 +155,7 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         fetch(`/items/${item.id}`, {
             method: 'PUT',
             body: JSON.stringify({
-                name: item.name,
                 dueDate: value,
-                completed: !item.completed,
             }),
             headers: { 'Content-Type': 'application/json' },
         })
@@ -168,31 +163,32 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         .then(onItemUpdate);
     };
 
-    const Priority = () => {
-        //const { Form } = ReactBootstrap;
+    const Priority = (valObj) => {
+        const { Form } = ReactBootstrap;
         
-        return (
-            /*<Form.Select>
+        return (    
+            <Form.Control as="select" onChange={updatePriority} value={valObj.val}>
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
-            </Form.Select>*/
-    
-            <select onChange={updatePriority}>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-            </select>
+            </Form.Control>
         )
     };
 
-    const DueDate = () => {
+    const DueDate = (valObj) => {
         const { Form } = ReactBootstrap;
-    
+
+        let parsedDate = null;
+
+        if(valObj.val !== undefined && valObj.val !== null) {
+            parsedDate = new Date(valObj.val).toISOString().split("T")[0];
+        }
+
         return (
             <Form.Control
                 type="date"
                 onChange={updateDueDate}
+                value={parsedDate}
             />
         )
     }
@@ -219,12 +215,18 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
                         />
                     </Button>
                 </Col>
-                <Col xs={3} className="name">
+                <Col xs={2} className="name">
                     {item.name}
                 </Col>
-                <Col xs={7}>
-                    <Priority />
-                    <DueDate />
+                <Col xs={3}>
+                    <Priority
+                        val={item.priority}
+                    />
+                </Col>
+                <Col xs={5}>
+                    <DueDate
+                        val={item.due_date}
+                    />
                 </Col>
                 <Col xs={1} className="text-center remove">
                     <Button
