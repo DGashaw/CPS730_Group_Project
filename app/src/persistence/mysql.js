@@ -39,7 +39,8 @@ async function init() {
 
     return new Promise((acc, rej) => {
         pool.query(
-            'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean) DEFAULT CHARSET utf8mb4',
+            'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), priority varchar(10), due_date date, '
+            + 'category varchar(20), completed boolean) DEFAULT CHARSET utf8mb4',
             err => {
                 if (err) return rej(err);
 
@@ -102,11 +103,63 @@ async function storeItem(item) {
     });
 }
 
-async function updateItem(id, item) {
+async function updateItemCompleted(id, item) {
     return new Promise((acc, rej) => {
         pool.query(
-            'UPDATE todo_items SET name=?, completed=? WHERE id=?',
-            [item.name, item.completed ? 1 : 0, id],
+            'UPDATE todo_items SET completed=? WHERE id=?',
+            [item.completed ? 1 : 0, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function updateItemDueDate(id, item) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            'UPDATE todo_items SET due_date=? WHERE id=?',
+            [item.dueDate, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function updateItemPriority(id, item) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            'UPDATE todo_items SET priority=? WHERE id=?',
+            [item.priority, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function updateItemCategory(id, item) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            'UPDATE todo_items SET category=? WHERE id=?',
+            [item.category, id],
+            err => {
+                if (err) return rej(err);
+                acc();
+            },
+        );
+    });
+}
+
+async function updateItemCompleted(id, item) {
+    return new Promise((acc, rej) => {
+        pool.query(
+            'UPDATE todo_items SET completed=? WHERE id=?',
+            [item.completed ? 1 : 0, id],
             err => {
                 if (err) return rej(err);
                 acc();
@@ -130,6 +183,9 @@ module.exports = {
     getItems,
     getItem,
     storeItem,
-    updateItem,
+    updateItemDueDate,
+    updateItemPriority,
+    updateItemCategory,
+    updateItemCompleted,
     removeItem,
 };
