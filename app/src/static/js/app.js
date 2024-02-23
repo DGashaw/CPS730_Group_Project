@@ -189,6 +189,21 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         .then(onItemUpdate);
     };
 
+    const updateCategory = (event) => {
+        let value = event.target.value;
+
+        fetch(`/items/${item.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                category: value,
+            }),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(r => r.json())
+        .then(onItemUpdate);
+    };
+    
+
     const Priority = (valObj) => {
         const { Form } = ReactBootstrap;
         
@@ -219,6 +234,20 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         )
     }
 
+    const Category = (valObj) => {
+        const { Form } = ReactBootstrap;
+        return (    
+            <Form.Control as="select" onChange={updateCategory} value={valObj.val}>
+                <option value="Personal">Personal</option>
+                <option value="Work">Work</option>
+                <option value="Travel">Travel</option>
+                <option value="Social">Social</option>
+                <option value="Meeting">Meeting</option>
+            </Form.Control>
+        )
+
+    }
+
     return (
         <Container fluid className={`item ${item.completed && 'completed'}`}>
             <Row>
@@ -244,14 +273,19 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
                 <Col xs={2} className="name">
                     {item.name}
                 </Col>
-                <Col xs={3}>
+                <Col xs={2}>
                     <Priority
                         val={item.priority}
                     />
                 </Col>
-                <Col xs={5}>
+                <Col xs={3}>
                     <DueDate
                         val={item.due_date}
+                    />
+                </Col>
+                <Col xs={3}>
+                    <Category
+                        val={item.category}
                     />
                 </Col>
                 <Col xs={1} className="text-center remove">
