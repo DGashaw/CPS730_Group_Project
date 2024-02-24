@@ -3,23 +3,12 @@ services:
     image: node:18-alpine
     command: sh -c "yarn install && yarn run dev"
     ports:
-      - 3000:3000
+      - 80:3000
     working_dir: /app
     volumes:
       - ./:/app
     environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: secret
+      MYSQL_HOST: ls-c8cc2ed3e02c6c0a00a82cca079761f5c521e23d.cdqeoq0qq4tv.ca-central-1.rds.amazonaws.com
+      MYSQL_USER: dbmasteruser
+      MYSQL_PASSWORD: CP$730TodosAppDb
       MYSQL_DB: todos
-
-  mysql:
-    image: mysql:8.0
-    volumes:
-      - todo-mysql-data:/var/lib/mysql
-    environment: 
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: todos
-
-volumes:
-  todo-mysql-data:
