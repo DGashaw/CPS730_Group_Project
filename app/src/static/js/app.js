@@ -13,6 +13,12 @@ function App() {
 
 function TodoListCard() {
     const [items, setItems] = React.useState(null);
+    const [searchTerm, setSearchTerm] = React.useState(''); // need for search and filter
+
+    //simple function that maps the user inputs to filter the items array 
+    const filteredItems = items && items.filter(item => {
+        return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     React.useEffect(() => {
         fetch('/items')
@@ -55,14 +61,28 @@ function TodoListCard() {
             {items.length === 0 && (
                 <p className="text-center">You have no todo items yet! Add one above!</p>
             )}
-            {items.map(item => (
-                <ItemDisplay
-                    item={item}
-                    key={item.id}
-                    onItemUpdate={onItemUpdate}
-                    onItemRemoval={onItemRemoval}
-                />
-            ))}
+
+            <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            
+            {/* Use filteredItems.map instead of items.map to render ItemDisplay components */}
+            {filteredItems && filteredItems.length > 0 ? (
+                filteredItems.map(item => (
+                    <ItemDisplay
+                        item={item}
+                        // ... other props
+                        key={item.id}
+                        onItemUpdate={onItemUpdate}
+                        onItemRemoval={onItemRemoval}
+                    />
+                ))
+            ) : (
+                <p className="text-center">No items found.</p>
+            )}
         </React.Fragment>
     );
 }
@@ -163,6 +183,21 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         .then(onItemUpdate);
     };
 
+    const updateCategory = (event) => {
+        let value = event.target.value;
+
+        fetch(`/items/${item.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                category: value,
+            }),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(r => r.json())
+        .then(onItemUpdate);
+    };
+    
+
     const Priority = (valObj) => {
         const { Form } = ReactBootstrap;
         
@@ -193,6 +228,20 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
         )
     }
 
+    const Category = (valObj) => {
+        const { Form } = ReactBootstrap;
+        return (    
+            <Form.Control as="select" onChange={updateCategory} value={valObj.val}>
+                <option value="Personal">Personal</option>
+                <option value="Work">Work</option>
+                <option value="Travel">Travel</option>
+                <option value="Social">Social</option>
+                <option value="Meeting">Meeting</option>
+            </Form.Control>
+        )
+
+    }
+
     return (
         <Container fluid className={`item ${item.completed && 'completed'}`}>
             <Row>
@@ -218,14 +267,19 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
                 <Col xs={2} className="name">
                     {item.name}
                 </Col>
-                <Col xs={3}>
+                <Col xs={2}>
                     <Priority
                         val={item.priority}
                     />
                 </Col>
-                <Col xs={5}>
+                <Col xs={3}>
                     <DueDate
                         val={item.due_date}
+                    />
+                </Col>
+                <Col xs={3}>
+                    <Category
+                        val={item.category}
                     />
                 </Col>
                 <Col xs={1} className="text-center remove">
