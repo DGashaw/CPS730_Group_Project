@@ -61,20 +61,14 @@ function TodoListCard() {
             {items.length === 0 && (
                 <p className="text-center">You have no todo items yet! Add one above!</p>
             )}
-            {/*{items.map(item => (
-                <ItemDisplay
-                    item={item}
-                    key={item.id}
-                    onItemUpdate={onItemUpdate}
-                    onItemRemoval={onItemRemoval}
-                />
-            ))}*/}
+
             <input
                 type="text"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
+            
             {/* Use filteredItems.map instead of items.map to render ItemDisplay components */}
             {filteredItems && filteredItems.length > 0 ? (
                 filteredItems.map(item => (
