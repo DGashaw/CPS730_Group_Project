@@ -21,6 +21,14 @@ async function init() {
     const password = PASSWORD_FILE ? fs.readFileSync(PASSWORD_FILE) : PASSWORD;
     const database = DB_FILE ? fs.readFileSync(DB_FILE) : DB;
 
+    // First, create a connection without specifying a database
+    const initialConn = await mysql.createConnection({host, user, password});
+
+    // Check if the 'todos' database exists, and create it if it doesn't
+    await initialConn.query(`CREATE DATABASE IF NOT EXISTS todos`);
+    // Close the initial connection
+    await initialConn.end();
+
     await waitPort({ 
         host, 
         port: 3306,
