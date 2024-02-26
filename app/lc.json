@@ -2,7 +2,7 @@
     "serviceName": "todos-application",
     "containers": {
         "todos-app-container": {
-            "image": ":todos-application.latest.3",
+            "image": ":todos-application.latest.12",
             "environment":{
             	"MYSQL_HOST": "ls-c8cc2ed3e02c6c0a00a82cca079761f5c521e23d.cdqeoq0qq4tv.ca-central-1.rds.amazonaws.com",
             	"MYSQL_USER": "dbmasteruser",
