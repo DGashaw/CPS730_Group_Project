@@ -1,5 +1,5 @@
 aws lightsail create-instances \
---instance-names Ubuntu-2 \
+--instance-names Ubuntu-1 \
 --availability-zone ca-central-1 \
 --blueprint-id ubuntu_22_04 \
 --bundle-id small_3_0
@@ -10,7 +10,7 @@ aws lightsail create-instance-snapshot \
 
 aws lightsail create-instances-from-snapshot \
 --instance-snapshot-name todo-instance \
---instance-names {Ubuntu-3} \
+--instance-names {Ubuntu-2} \
 --availability-zone ca-central-1a \
 --bundle-id small_3_0
 
